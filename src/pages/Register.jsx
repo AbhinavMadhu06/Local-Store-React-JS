@@ -16,7 +16,8 @@ const Register = () => {
         location: '',
         latitude: null,
         longitude: null,
-        logo: null
+        logo: null,
+        profile_photo: null
     });
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,6 +26,8 @@ const Register = () => {
     const handleChange = (e) => {
         if (e.target.name === 'logo') {
             setFormData({ ...formData, logo: e.target.files[0] });
+        } else if (e.target.name === 'profile_photo') {
+            setFormData({ ...formData, profile_photo: e.target.files[0] });
         } else {
             setFormData({ ...formData, [e.target.name]: e.target.value });
         }
@@ -78,13 +81,24 @@ const Register = () => {
 
                 headers = { 'Content-Type': 'multipart/form-data' };
             } else {
-                payload = {
-                    username: formData.username,
-                    email: formData.email,
-                    mobile_number: formData.mobile_number,
-                    password: formData.password,
-                    role: formData.role
-                };
+                if (formData.profile_photo) {
+                    payload = new FormData();
+                    payload.append('username', formData.username);
+                    payload.append('email', formData.email);
+                    payload.append('mobile_number', formData.mobile_number);
+                    payload.append('password', formData.password);
+                    payload.append('role', formData.role);
+                    payload.append('profile_photo', formData.profile_photo);
+                    headers = { 'Content-Type': 'multipart/form-data' };
+                } else {
+                    payload = {
+                        username: formData.username,
+                        email: formData.email,
+                        mobile_number: formData.mobile_number,
+                        password: formData.password,
+                        role: formData.role
+                    };
+                }
             }
 
             await api.post('users/', payload, { headers });
@@ -171,6 +185,12 @@ const Register = () => {
                                             <input name="password" type="password" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-800 outline-none transition-all font-medium placeholder:text-slate-400" placeholder="Strong pwd" value={formData.password} onChange={handleChange} />
                                         </div>
                                     </div>
+                                    {formData.role === 'JOB_SEEKER' && (
+                                        <div className="mt-3">
+                                            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Profile Photo (Optional)</label>
+                                            <input name="profile_photo" type="file" accept="image/*" className="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" onChange={handleChange} />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

@@ -127,6 +127,12 @@ const ShopDetails = () => {
                                     <MapPin className="w-5 h-5 text-indigo-500" />
                                     {shop.location}
                                 </div>
+                                {shop.user?.email && (
+                                    <div className="inline-flex items-center gap-2.5 text-slate-600 font-bold bg-slate-100/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-200/50 w-max">
+                                        <span className="w-5 h-5 flex items-center justify-center text-indigo-500">📧</span>
+                                        {shop.user.email}
+                                    </div>
+                                )}
                                 {isOwner && (
                                     <button
                                         onClick={() => setShowPwdModal(true)}

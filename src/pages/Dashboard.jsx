@@ -13,7 +13,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [isShopOwner, setIsShopOwner] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
-    const [selectedNote, setSelectedNote] = useState(null);
+    const [expandedMessageId, setExpandedMessageId] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -322,45 +322,73 @@ const Dashboard = () => {
                             </thead>
                             <tbody className="bg-white divide-y divide-slate-100/80">
                                 {applications.map((app) => (
-                                    <tr key={app.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm font-bold text-slate-900">{app.job_details?.title}</div>
-                                            <div className="text-xs font-medium text-slate-500 bg-slate-100 inline-block px-2 py-0.5 rounded mt-1">{app.job_details?.shop?.company_name}</div>
-                                            {!isShopOwner && app.owner_note && (
-                                                <button
-                                                    onClick={() => setSelectedNote({ title: app.job_details?.title, note: app.owner_note })}
-                                                    className="mt-3 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
-                                                >
-                                                    <MessageCircle className="w-3.5 h-3.5" /> View Message
-                                                </button>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-slate-900 font-bold">{app.applicant?.username}</div>
-                                            <div className="text-xs text-slate-500 font-medium">{app.applicant?.email}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-medium">
-                                            {new Date(app.applied_at).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border ${app.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
-                                                app.status === 'REJECTED' ? 'bg-rose-100 text-rose-800 border-rose-200' :
-                                                    app.status === 'SHORTLISTED' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                                                        'bg-amber-100 text-amber-800 border-amber-200'
-                                                }`}>
-                                                {app.status === 'SHORTLISTED' ? '⭐ SHORTLISTED' : app.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-slate-500">
-                                            {app.cv ? (
-                                                <a href={app.cv} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-800 font-bold mr-3 inline-block">📄 View CV</a>
-                                            ) : (
-                                                <span className="text-slate-400 font-medium mr-3 inline-block">No CV</span>
-                                            )}
-                                            <br />
-                                            <span className="text-xs text-slate-400 font-medium max-w-[200px] block truncate mt-1 leading-tight" title={app.notes}>{app.notes ? `"${app.notes}"` : 'No additional notes'}</span>
-                                        </td>
-                                    </tr>
+                                    <React.Fragment key={app.id}>
+                                        <tr className="hover:bg-slate-50 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm font-bold text-slate-900">{app.job_details?.title}</div>
+                                                <div className="text-xs font-medium text-slate-500 bg-slate-100 inline-block px-2 py-0.5 rounded mt-1">{app.job_details?.shop?.company_name}</div>
+                                                {!isShopOwner && app.owner_note && (
+                                                    <button
+                                                        onClick={() => setExpandedMessageId(expandedMessageId === app.id ? null : app.id)}
+                                                        className={`mt-3 border text-xs font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm ${expandedMessageId === app.id ? 'bg-indigo-100 border-indigo-200 text-indigo-800' : 'bg-indigo-50 border-indigo-100 hover:bg-indigo-100 text-indigo-700'}`}
+                                                    >
+                                                        <MessageCircle className="w-3.5 h-3.5" /> {expandedMessageId === app.id ? 'Close Message' : 'View Message'}
+                                                    </button>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-slate-900 font-bold">{app.applicant?.username}</div>
+                                                <div className="text-xs text-slate-500 font-medium">{app.applicant?.email}</div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-medium">
+                                                {new Date(app.applied_at).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border ${app.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
+                                                    app.status === 'REJECTED' ? 'bg-rose-100 text-rose-800 border-rose-200' :
+                                                        app.status === 'SHORTLISTED' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                                            'bg-amber-100 text-amber-800 border-amber-200'
+                                                    }`}>
+                                                    {app.status === 'SHORTLISTED' ? '⭐ SHORTLISTED' : app.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-slate-500">
+                                                {app.cv ? (
+                                                    <a href={app.cv} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-800 font-bold mr-3 inline-block">📄 View CV</a>
+                                                ) : (
+                                                    <span className="text-slate-400 font-medium mr-3 inline-block">No CV</span>
+                                                )}
+                                                <br />
+                                                <span className="text-xs text-slate-400 font-medium max-w-[200px] block truncate mt-1 leading-tight" title={app.notes}>{app.notes ? `"${app.notes}"` : 'No additional notes'}</span>
+                                            </td>
+                                        </tr>
+                                        {/* Inline Expansion Row */}
+                                        {expandedMessageId === app.id && app.owner_note && (
+                                            <tr>
+                                                <td colSpan="5" className="p-0 border-0">
+                                                    <div className="bg-indigo-50/50 border-y border-indigo-100 p-6 shadow-inner animate-[fadeIn_0.2s_ease-out]">
+                                                        <div className="flex items-start gap-4 max-w-3xl">
+                                                            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 border border-indigo-200">
+                                                                <MessageCircle className="w-5 h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-bold text-indigo-900 flex items-center gap-2 mb-1">
+                                                                    Message from {app.job_details?.shop?.company_name}
+                                                                    <span className="text-[10px] bg-indigo-200 text-indigo-700 px-2 py-0.5 rounded-full uppercase tracking-wider">Regarding: {app.job_details?.title}</span>
+                                                                </div>
+                                                                <div className="bg-white p-4 rounded-xl border border-indigo-100/60 shadow-sm relative">
+                                                                    <div className="absolute top-0 left-4 -mt-1.5 w-3 h-3 bg-white border-t border-l border-indigo-100/60 rotate-45"></div>
+                                                                    <p className="text-slate-700 text-sm font-medium italic relative z-10 leading-relaxed">
+                                                                        "{app.owner_note}"
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
                                 ))}
                             </tbody>
                         </table>
@@ -368,24 +396,7 @@ const Dashboard = () => {
                 )}
             </div>
 
-            {selectedNote && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSelectedNote(null)}></div>
-                    <div className="glass shadow-2xl rounded-3xl max-w-sm w-full p-8 relative z-10 animate-[fadeIn_0.2s_ease-out]">
-                        <button
-                            onClick={() => setSelectedNote(null)}
-                            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
-                        >
-                            ✕
-                        </button>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">Message from Shop</h3>
-                        <p className="text-sm font-medium text-slate-500 mb-4">{selectedNote.title}</p>
-                        <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-100 relative">
-                            <span className="text-indigo-900 font-medium italic leading-relaxed">"{selectedNote.note}"</span>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };
