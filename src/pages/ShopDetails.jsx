@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
-import { MapPin, Briefcase, Clock, Users, DollarSign, Building2, KeyRound, Save } from 'lucide-react';
+import { MapPin, Briefcase, Clock, Users, DollarSign, Building2, KeyRound, Save, Phone } from 'lucide-react';
 import { AuthContext } from '../AuthContext';
 
 const ShopDetails = () => {
@@ -131,6 +131,12 @@ const ShopDetails = () => {
                                     <div className="inline-flex items-center gap-2.5 text-slate-600 font-bold bg-slate-100/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-200/50 w-max">
                                         <span className="w-5 h-5 flex items-center justify-center text-indigo-500">📧</span>
                                         {shop.user.email}
+                                    </div>
+                                )}
+                                {shop.user?.mobile_number && (
+                                    <div className="inline-flex items-center gap-2.5 text-slate-600 font-bold bg-slate-100/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-200/50 w-max">
+                                        <Phone className="w-4 h-4 text-indigo-500" />
+                                        {shop.user.mobile_number}
                                     </div>
                                 )}
                                 {isOwner && (
