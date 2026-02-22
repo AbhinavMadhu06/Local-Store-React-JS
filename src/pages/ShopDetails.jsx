@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
-import { MapPin, Briefcase, Clock, Users, DollarSign, Building2, KeyRound, Save, Phone } from 'lucide-react';
+import { MapPin, Briefcase, Clock, Users, DollarSign, Building2, KeyRound, Save, Phone, Mail } from 'lucide-react';
 import { AuthContext } from '../AuthContext';
 
 const ShopDetails = () => {
@@ -127,18 +127,6 @@ const ShopDetails = () => {
                                     <MapPin className="w-5 h-5 text-indigo-500" />
                                     {shop.location}
                                 </div>
-                                {shop.user?.email && (
-                                    <div className="inline-flex items-center gap-2.5 text-slate-600 font-bold bg-slate-100/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-200/50 w-max">
-                                        <span className="w-5 h-5 flex items-center justify-center text-indigo-500">📧</span>
-                                        {shop.user.email}
-                                    </div>
-                                )}
-                                {shop.user?.mobile_number && (
-                                    <div className="inline-flex items-center gap-2.5 text-slate-600 font-bold bg-slate-100/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-200/50 w-max">
-                                        <Phone className="w-4 h-4 text-indigo-500" />
-                                        {shop.user.mobile_number}
-                                    </div>
-                                )}
                                 {isOwner && (
                                     <button
                                         onClick={() => setShowPwdModal(true)}
@@ -154,6 +142,34 @@ const ShopDetails = () => {
                     <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Details Sidebar */}
                         <div className="lg:col-span-1 space-y-8">
+                            {/* Contact Box */}
+                            <div className="bg-slate-50/50 rounded-3xl p-6 sm:p-8 border border-slate-100">
+                                <h3 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
+                                    <div className="w-2 h-6 bg-pink-500 rounded-full"></div>
+                                    Contact Info
+                                </h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0 shadow-inner">
+                                            <Mail className="w-4 h-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
+                                            <p className="text-sm font-bold text-slate-700 truncate">{shop.user?.email || 'Not provided'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 shadow-inner">
+                                            <Phone className="w-4 h-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Phone Number</p>
+                                            <p className="text-sm font-bold text-slate-700 truncate">{shop.user?.mobile_number || 'Not provided'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="bg-slate-50/50 rounded-3xl p-6 sm:p-8 border border-slate-100">
                                 <h3 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
                                     <div className="w-2 h-6 bg-indigo-500 rounded-full"></div>
