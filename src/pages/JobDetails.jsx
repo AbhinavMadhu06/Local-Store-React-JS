@@ -700,8 +700,8 @@ const JobDetails = () => {
             </div>
 
             {showApplyModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-6 z-[9999]">
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setShowApplyModal(false)}></div>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center sm:p-6">
+                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-md" onClick={() => setShowApplyModal(false)}></div>
                     <div className="glass-card shadow-2xl rounded-t-3xl sm:rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-hidden sm:overflow-visible h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col md:flex-row mt-auto sm:mt-0">
 
                         {/* Left Side: Job Info */}
