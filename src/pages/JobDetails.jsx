@@ -191,7 +191,23 @@ const JobDetails = () => {
             setApplicationStatus('PENDING');
             setTimeout(() => setShowApplyModal(false), 2000);
         } catch (err) {
-            setApplyMessage(err.response?.data?.detail || 'Application failed. You might have already applied.');
+            console.error("Apply error:", err.response?.data);
+            let errMsg = 'Application failed. Please try again.';
+            if (err.response?.data) {
+                if (err.response.data.detail) {
+                    errMsg = err.response.data.detail;
+                } else if (typeof err.response.data === 'object') {
+                    // Extract first error value from the DRF error object
+                    const firstKey = Object.keys(err.response.data)[0];
+                    if (firstKey) {
+                        const firstError = err.response.data[firstKey];
+                        errMsg = Array.isArray(firstError) ? firstError[0] : String(firstError);
+                    }
+                } else if (typeof err.response.data === 'string') {
+                    errMsg = err.response.data;
+                }
+            }
+            setApplyMessage(errMsg);
         }
     };
 
