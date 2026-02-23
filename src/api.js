@@ -9,22 +9,50 @@ const api = axios.create({
 });
 
 
+let activeRequests = 0;
+let wakeUpTimeout = null;
+
+const startRequestTracking = () => {
+    activeRequests++;
+    if (activeRequests === 1 && !isDevelopment) {
+        wakeUpTimeout = setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('server-waking-up'));
+        }, 4000); // Trigger message if request takes > 4s
+    }
+};
+
+const endRequestTracking = () => {
+    activeRequests = Math.max(0, activeRequests - 1);
+    if (activeRequests === 0) {
+        clearTimeout(wakeUpTimeout);
+        window.dispatchEvent(new CustomEvent('server-awake'));
+    }
+};
+
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('access_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        startRequestTracking();
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        endRequestTracking();
+        return Promise.reject(error);
+    }
 );
 
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        endRequestTracking();
+        return response;
+    },
     async (error) => {
+        endRequestTracking();
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             const refreshToken = localStorage.getItem('refresh_token');
             if (refreshToken) {

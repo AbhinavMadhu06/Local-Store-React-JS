@@ -144,11 +144,46 @@ const Navbar = () => {
     );
 };
 
+const ServerWakeupNotice = () => {
+    const [isWaking, setIsWaking] = useState(false);
+
+    useEffect(() => {
+        const handleWaking = () => setIsWaking(true);
+        const handleAwake = () => setIsWaking(false);
+
+        window.addEventListener('server-waking-up', handleWaking);
+        window.addEventListener('server-awake', handleAwake);
+
+        // Proactively throw a ping to wake up the server when the user first loads the app
+        api.get('jobs/').catch(() => { });
+
+        return () => {
+            window.removeEventListener('server-waking-up', handleWaking);
+            window.removeEventListener('server-awake', handleAwake);
+        };
+    }, []);
+
+    if (!isWaking) return null;
+
+    return (
+        <div className="fixed top-0 left-0 w-full z-[100] bg-indigo-600/95 backdrop-blur-md text-white px-4 py-3 shadow-lg border-b border-indigo-500 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 transition-all duration-300">
+            <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin shrink-0"></div>
+                <span className="font-bold text-sm tracking-wide">Connecting to server...</span>
+            </div>
+            <p className="text-indigo-100 text-xs sm:text-sm text-center">
+                This is a free Render instance. It may take up to 50 seconds to wake up from hibernation.
+            </p>
+        </div>
+    );
+};
+
 function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
                 <div className="min-h-screen relative flex flex-col">
+                    <ServerWakeupNotice />
                     {/* Decorative background blobs - Wrapped to prevent overflow */}
                     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                         <div className="absolute top-0 -left-40 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
