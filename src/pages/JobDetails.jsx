@@ -700,12 +700,12 @@ const JobDetails = () => {
             </div>
 
             {showApplyModal && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center sm:p-6">
-                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-md" onClick={() => setShowApplyModal(false)}></div>
-                    <div className="glass-card shadow-2xl rounded-t-3xl sm:rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-hidden sm:overflow-visible h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col md:flex-row mt-auto sm:mt-0">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6">
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowApplyModal(false)}></div>
+                    <div className="glass-card shadow-2xl rounded-2xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.2s_ease-out] overflow-hidden max-h-[95dvh] flex flex-col md:flex-row">
 
-                        {/* Left Side: Job Info */}
-                        <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-8 md:p-12 text-white md:w-2/5 flex flex-col justify-between">
+                        {/* Left Side: Job Info (Hidden on mobile to save vertical space) */}
+                        <div className="hidden md:flex bg-gradient-to-br from-indigo-900 to-slate-900 p-8 md:p-12 text-white md:w-2/5 flex-col justify-between">
                             <div>
                                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
                                     <Briefcase className="w-6 h-6 text-indigo-300" />
@@ -714,89 +714,72 @@ const JobDetails = () => {
                                 <h2 className="text-3xl font-black mb-4 leading-tight">{job.title}</h2>
                                 <p className="text-indigo-200/80 font-medium">Join <span className="text-white font-bold">{job.shop.company_name}</span> and take the next step in your career.</p>
                             </div>
-
-                            <div className="hidden md:block mt-12 space-y-4">
-                                <div className="flex items-center gap-3 text-indigo-200">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                    <span className="font-bold text-sm">Direct to Employer</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-indigo-200">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                    <span className="font-bold text-sm">Fast Application</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-indigo-200">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                    <span className="font-bold text-sm">Trackable Status</span>
-                                </div>
-                            </div>
                         </div>
 
-                        {/* Right Side: Form */}
-                        <div className="p-8 md:p-12 md:w-3/5 relative bg-white overflow-y-auto overscroll-contain pb-24 sm:pb-8">
+                        {/* Right Side: Form (Ultra Compact on Mobile) */}
+                        <div className="p-5 sm:p-8 md:p-12 md:w-3/5 w-full relative bg-white flex flex-col h-full justify-center">
                             <button
                                 onClick={() => setShowApplyModal(false)}
-                                className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 transition-colors"
+                                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 transition-colors"
                             >
                                 ✕
                             </button>
 
-                            <h3 className="text-2xl font-bold text-slate-800 mb-8">Your Application</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-4 sm:mb-6 pr-8">Complete Application</h3>
 
-                            <form onSubmit={handleApply} className="space-y-6">
-
-                                {/* Upload Box */}
+                            <form onSubmit={handleApply} className="space-y-3 sm:space-y-5">
+                                {/* Upload Box - Compressed */}
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-3">Resume / CV</label>
-                                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 transition-colors group">
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <Upload className="w-8 h-8 mb-3 text-slate-400 group-hover:text-indigo-500 transition-colors" />
-                                            <p className="mb-2 text-sm text-slate-600 font-medium">
-                                                <span className="font-bold text-indigo-600">Click to upload</span> or drag and drop
+                                    <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">Resume / CV</label>
+                                    <label className="flex flex-col items-center justify-center w-full h-16 sm:h-24 border-2 border-slate-200 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 transition-colors group">
+                                        <div className="flex flex-col items-center justify-center pt-2 pb-2">
+                                            <Upload className="w-5 h-5 mb-1 sm:mb-2 text-slate-400 group-hover:text-indigo-500 transition-colors hidden sm:block" />
+                                            <p className="text-xs sm:text-sm text-slate-600 font-medium text-center px-2">
+                                                <span className="font-bold text-indigo-600">Click to upload</span> {applyCv ? applyCv.name : '(Optional)'}
                                             </p>
-                                            <p className="text-xs text-slate-500 font-bold">{applyCv ? applyCv.name : 'PDF, DOCX, etc. (Optional)'}</p>
                                         </div>
                                         <input type="file" onChange={(e) => setApplyCv(e.target.files[0])} className="hidden" />
                                     </label>
                                 </div>
 
-                                {/* Text Area */}
+                                {/* Text Area - Compressed */}
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-3">Cover Note (Optional)</label>
+                                    <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">Cover Note (Optional)</label>
                                     <textarea
-                                        rows="4"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none font-medium text-slate-700"
+                                        rows="2"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 sm:py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none font-medium text-slate-700 text-sm"
                                         value={applyNotes}
                                         onChange={(e) => setApplyNotes(e.target.value)}
-                                        placeholder="Briefly explain why you're a perfect match..."
+                                        placeholder="Why you're a great fit..."
                                     ></textarea>
                                 </div>
 
-                                {/* Checkbox */}
-                                <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-100 flex items-start gap-4">
+                                {/* Checkbox - Compressed */}
+                                <div className="bg-amber-50/70 p-3 sm:p-4 rounded-xl border border-amber-100 flex items-start gap-3">
                                     <input
                                         type="checkbox"
                                         id="requirements"
-                                        className="mt-1 w-5 h-5 text-indigo-600 bg-white border-amber-300 rounded focus:ring-indigo-500 cursor-pointer"
+                                        className="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 bg-white border-amber-300 rounded focus:ring-indigo-500 cursor-pointer flex-shrink-0"
                                         required
                                     />
-                                    <label htmlFor="requirements" className="text-sm text-amber-900 font-medium cursor-pointer leading-relaxed">
-                                        I formally declare that I meet all the <span className="font-bold">skills, experience, and educational requirements</span> specified for this position.
+                                    <label htmlFor="requirements" className="text-[11px] sm:text-sm text-amber-900 font-medium cursor-pointer leading-tight sm:leading-relaxed">
+                                        I formally declare that I meet all <span className="font-bold">skills, experience, and educational requirements</span> for this position.
                                     </label>
                                 </div>
 
                                 {/* Messages */}
                                 {applyMessage && (
-                                    <div className={`p-4 rounded-xl text-sm font-bold ${applyMessage.includes('success') ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                                    <div className={`p-3 rounded-xl text-xs sm:text-sm font-bold ${applyMessage.includes('success') ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
                                         {applyMessage}
                                     </div>
                                 )}
 
-                                {/* Submit Button */}
+                                {/* Submit Button - Compressed */}
                                 <button
                                     type="submit"
-                                    className="w-full relative group overflow-hidden bg-slate-900 text-white font-bold py-4 px-6 rounded-2xl shadow-xl transition-all hover:shadow-2xl hover:bg-indigo-600 flex items-center justify-center gap-2"
+                                    className="w-full relative group overflow-hidden bg-slate-900 text-white font-bold py-3 sm:py-4 px-6 rounded-xl sm:rounded-2xl shadow-lg transition-all hover:bg-indigo-600 flex items-center justify-center"
                                 >
-                                    <span className="relative z-10 flex items-center gap-2 text-lg">Submit Application <CheckCircle2 className="w-5 h-5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all duration-300" /></span>
+                                    <span className="relative z-10 flex items-center gap-2 text-sm sm:text-lg">Apply Now <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /></span>
                                 </button>
                             </form>
                         </div>
