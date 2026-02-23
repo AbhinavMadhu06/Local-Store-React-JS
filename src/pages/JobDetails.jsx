@@ -41,6 +41,29 @@ const JobDetails = () => {
     const [replyingTo, setReplyingTo] = useState(null);
 
     useEffect(() => {
+        if (showApplyModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [showApplyModal]);
+
+    useEffect(() => {
+        if (actionModal.isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else if (!showApplyModal) {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            if (!showApplyModal) document.body.style.overflow = '';
+        };
+    }, [actionModal.isOpen, showApplyModal]);
+
+    useEffect(() => {
         fetchJob();
     }, [id, user]);
 
@@ -679,7 +702,7 @@ const JobDetails = () => {
             {showApplyModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-6 z-[9999]">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setShowApplyModal(false)}></div>
-                    <div className="glass-card shadow-2xl rounded-t-3xl sm:rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-y-auto max-h-[95dvh] sm:max-h-[90vh] flex flex-col md:flex-row mt-auto sm:mt-0">
+                    <div className="glass-card shadow-2xl rounded-t-3xl sm:rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-hidden sm:overflow-visible h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col md:flex-row mt-auto sm:mt-0">
 
                         {/* Left Side: Job Info */}
                         <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-8 md:p-12 text-white md:w-2/5 flex flex-col justify-between">
@@ -709,7 +732,7 @@ const JobDetails = () => {
                         </div>
 
                         {/* Right Side: Form */}
-                        <div className="p-8 md:p-12 md:w-3/5 relative bg-white">
+                        <div className="p-8 md:p-12 md:w-3/5 relative bg-white overflow-y-auto overscroll-contain pb-24 sm:pb-8">
                             <button
                                 onClick={() => setShowApplyModal(false)}
                                 className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 transition-colors"
@@ -785,74 +808,76 @@ const JobDetails = () => {
             {actionModal.isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 z-[9999]">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setActionModal({ ...actionModal, isOpen: false })}></div>
-                    <div className="glass shadow-2xl rounded-3xl max-w-md w-full p-8 relative z-10 animate-[fadeIn_0.2s_ease-out] overflow-y-auto max-h-[90vh]">
-                        <button
-                            onClick={() => setActionModal({ ...actionModal, isOpen: false })}
-                            className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
-                        >
-                            ✕
-                        </button>
-
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${actionModal.actionType === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-600' : actionModal.actionType === 'REJECTED' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'}`}>
-                                {actionModal.actionType === 'ACCEPTED' ? <CheckCircle className="w-6 h-6" /> : actionModal.actionType === 'REJECTED' ? <FileText className="w-6 h-6" /> : <span className="text-xl">⭐</span>}
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-slate-900">
-                                    {actionModal.actionType === 'ACCEPTED' ? 'Accept' : actionModal.actionType === 'REJECTED' ? 'Reject' : 'Shortlist'}
-                                </h2>
-                                <p className="text-slate-500 font-medium text-sm">{actionModal.applicantName}</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Message to Applicant (Optional)</label>
-                                <textarea
-                                    rows="3"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none font-medium text-slate-700"
-                                    value={actionNote}
-                                    onChange={(e) => setActionNote(e.target.value)}
-                                    placeholder={actionModal.actionType === 'ACCEPTED' ? "e.g., We'd love to schedule an interview..." : "e.g., We decided to move forward with other candidates..."}
-                                ></textarea>
-                            </div>
-
-                            {actionModal.actionType === 'ACCEPTED' && (
-                                <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 flex flex-col items-start gap-4">
-                                    <div className="flex items-start gap-3 w-full">
-                                        <input
-                                            type="checkbox"
-                                            id="rejectOthers"
-                                            checked={rejectOthers}
-                                            onChange={(e) => setRejectOthers(e.target.checked)}
-                                            className="mt-1 w-4 h-4 text-rose-600 bg-white border-rose-300 rounded focus:ring-rose-500 cursor-pointer flex-shrink-0"
-                                        />
-                                        <label htmlFor="rejectOthers" className="text-sm text-rose-900 font-bold cursor-pointer">
-                                            Bulk Reject all other Pending and Shortlisted applicants immediately.
-                                        </label>
-                                    </div>
-
-                                    {rejectOthers && (
-                                        <div className="w-full pl-7">
-                                            <label className="block text-xs font-bold text-rose-800 mb-2">Message to Rejected Applicants (Optional)</label>
-                                            <textarea
-                                                rows="2"
-                                                className="w-full bg-white border border-rose-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all resize-none font-medium text-slate-700 text-sm"
-                                                value={rejectOthersNote}
-                                                onChange={(e) => setRejectOthersNote(e.target.value)}
-                                                placeholder="e.g., We decided to move forward with another candidate..."
-                                            ></textarea>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
+                    <div className="glass shadow-2xl rounded-3xl max-w-md w-full relative z-10 animate-[fadeIn_0.2s_ease-out] overflow-hidden flex flex-col h-[90dvh] sm:h-auto sm:max-h-[90vh]">
+                        <div className="p-8 overflow-y-auto overscroll-contain pb-24 sm:pb-8">
                             <button
-                                onClick={submitApplicationAction}
-                                className={`w-full text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all text-center ${actionModal.actionType === 'ACCEPTED' ? 'bg-emerald-600 hover:bg-emerald-700' : actionModal.actionType === 'REJECTED' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+                                onClick={() => setActionModal({ ...actionModal, isOpen: false })}
+                                className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
                             >
-                                Confirm {actionModal.actionType === 'ACCEPTED' ? 'Acceptance' : actionModal.actionType === 'REJECTED' ? 'Rejection' : 'Shortlist'}
+                                ✕
                             </button>
+
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${actionModal.actionType === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-600' : actionModal.actionType === 'REJECTED' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'}`}>
+                                    {actionModal.actionType === 'ACCEPTED' ? <CheckCircle className="w-6 h-6" /> : actionModal.actionType === 'REJECTED' ? <FileText className="w-6 h-6" /> : <span className="text-xl">⭐</span>}
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-slate-900">
+                                        {actionModal.actionType === 'ACCEPTED' ? 'Accept' : actionModal.actionType === 'REJECTED' ? 'Reject' : 'Shortlist'}
+                                    </h2>
+                                    <p className="text-slate-500 font-medium text-sm">{actionModal.applicantName}</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Message to Applicant (Optional)</label>
+                                    <textarea
+                                        rows="3"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none font-medium text-slate-700"
+                                        value={actionNote}
+                                        onChange={(e) => setActionNote(e.target.value)}
+                                        placeholder={actionModal.actionType === 'ACCEPTED' ? "e.g., We'd love to schedule an interview..." : "e.g., We decided to move forward with other candidates..."}
+                                    ></textarea>
+                                </div>
+
+                                {actionModal.actionType === 'ACCEPTED' && (
+                                    <div className="bg-rose-50 p-4 rounded-xl border border-rose-100 flex flex-col items-start gap-4">
+                                        <div className="flex items-start gap-3 w-full">
+                                            <input
+                                                type="checkbox"
+                                                id="rejectOthers"
+                                                checked={rejectOthers}
+                                                onChange={(e) => setRejectOthers(e.target.checked)}
+                                                className="mt-1 w-4 h-4 text-rose-600 bg-white border-rose-300 rounded focus:ring-rose-500 cursor-pointer flex-shrink-0"
+                                            />
+                                            <label htmlFor="rejectOthers" className="text-sm text-rose-900 font-bold cursor-pointer">
+                                                Bulk Reject all other Pending and Shortlisted applicants immediately.
+                                            </label>
+                                        </div>
+
+                                        {rejectOthers && (
+                                            <div className="w-full pl-7">
+                                                <label className="block text-xs font-bold text-rose-800 mb-2">Message to Rejected Applicants (Optional)</label>
+                                                <textarea
+                                                    rows="2"
+                                                    className="w-full bg-white border border-rose-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all resize-none font-medium text-slate-700 text-sm"
+                                                    value={rejectOthersNote}
+                                                    onChange={(e) => setRejectOthersNote(e.target.value)}
+                                                    placeholder="e.g., We decided to move forward with another candidate..."
+                                                ></textarea>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={submitApplicationAction}
+                                    className={`w-full text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all text-center ${actionModal.actionType === 'ACCEPTED' ? 'bg-emerald-600 hover:bg-emerald-700' : actionModal.actionType === 'REJECTED' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+                                >
+                                    Confirm {actionModal.actionType === 'ACCEPTED' ? 'Acceptance' : actionModal.actionType === 'REJECTED' ? 'Rejection' : 'Shortlist'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
