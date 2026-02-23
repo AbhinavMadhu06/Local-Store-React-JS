@@ -317,7 +317,7 @@ const JobDetails = () => {
                     <div className="shrink-0 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-4 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t border-white/20 md:border-0">
                         <div className="text-left sm:text-right sm:mr-4 text-white drop-shadow-md">
                             <div className="text-sm text-indigo-100 font-medium">Salary</div>
-                            <div className="text-2xl font-bold flex items-center gap-1"><DollarSign className="w-5 h-5" /> {job.salary_range || 'Competitive'}</div>
+                            <div className="text-2xl font-bold flex items-center gap-1">{job.salary_range || 'Competitive'}</div>
                         </div>
                         {user ? (
                             !isOwner && (

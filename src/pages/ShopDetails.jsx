@@ -255,7 +255,7 @@ const ShopDetails = () => {
                                                         </span>
                                                         {job.salary_range && (
                                                             <span className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg w-max border border-emerald-100">
-                                                                <DollarSign className="w-3.5 h-3.5 text-emerald-600" /> {job.salary_range}
+                                                                {job.salary_range}
                                                             </span>
                                                         )}
                                                         <span className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100/80 px-3 py-1.5 rounded-lg w-max backdrop-blur-sm border border-slate-200/50">

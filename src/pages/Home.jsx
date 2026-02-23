@@ -431,7 +431,7 @@ const Home = () => {
                                         </span>
                                         {job.salary_range && (
                                             <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">
-                                                <DollarSign className="w-3.5 h-3.5 text-emerald-500" /> {job.salary_range}
+                                                {job.salary_range}
                                             </span>
                                         )}
                                     </div>
