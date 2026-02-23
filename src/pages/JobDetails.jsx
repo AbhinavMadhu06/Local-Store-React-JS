@@ -182,11 +182,7 @@ const JobDetails = () => {
         formData.append('meets_requirements', 'True');
 
         try {
-            await api.post(`jobs/${id}/apply/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            await api.post(`jobs/${id}/apply/`, formData);
             setApplyMessage('Application submitted successfully! Redirecting...');
             setApplicationStatus('PENDING');
             setTimeout(() => setShowApplyModal(false), 2000);
