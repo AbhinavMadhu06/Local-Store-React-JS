@@ -677,9 +677,9 @@ const JobDetails = () => {
             </div>
 
             {showApplyModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-6 z-[9999]">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setShowApplyModal(false)}></div>
-                    <div className="glass-card shadow-2xl rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-hidden flex flex-col md:flex-row">
+                    <div className="glass-card shadow-2xl rounded-t-3xl sm:rounded-3xl w-full max-w-4xl relative z-10 animate-[fadeIn_0.3s_ease-out] overflow-y-auto max-h-[95dvh] sm:max-h-[90vh] flex flex-col md:flex-row mt-auto sm:mt-0">
 
                         {/* Left Side: Job Info */}
                         <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-8 md:p-12 text-white md:w-2/5 flex flex-col justify-between">
@@ -783,9 +783,9 @@ const JobDetails = () => {
 
             {/* Custom Status Action Modal for Owners */}
             {actionModal.isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 z-[9999]">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setActionModal({ ...actionModal, isOpen: false })}></div>
-                    <div className="glass shadow-2xl rounded-3xl max-w-md w-full p-8 relative z-10 animate-[fadeIn_0.2s_ease-out]">
+                    <div className="glass shadow-2xl rounded-3xl max-w-md w-full p-8 relative z-10 animate-[fadeIn_0.2s_ease-out] overflow-y-auto max-h-[90vh]">
                         <button
                             onClick={() => setActionModal({ ...actionModal, isOpen: false })}
                             className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
